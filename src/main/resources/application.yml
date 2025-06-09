@@ -1,0 +1,21 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://erikvilar:erikav1@cluster0.wt9zg.mongodb.net
+      database: microservice-authenticationDB
+  banner:
+    location: classpath:banner/banner.txt
+  application:
+    name: microservice-authentication
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+server:
+  port: 6682
+  servlet:
+    context-path: /auth
