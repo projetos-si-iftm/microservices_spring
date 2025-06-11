@@ -1,0 +1,56 @@
+microservico-authentication/
+├── pom.xml
+└── src/
+    ├── main/
+    │   ├── java/
+    │   │   └── com/
+    │   │       └── example/
+    │   │           └── authservice/
+    │   │               ├── AuthserviceApplication.java
+    │   │               │
+    │   │               ├── config/
+    │   │               │   ├── FirebaseConfig.java
+    │   │               │   ├── MongoConfig.java
+    │   │               │   └── SecurityConfig.java
+    │   │               │
+    │   │               ├── domain/
+    │   │               │   ├── model/
+    │   │               │   │   ├── Account.java
+    │   │               │   │   ├── AccountRole.java
+    │   │               │   │   └── VerifiedToken.java
+    │   │               │   └── port/
+    │   │               │       └── out/
+    │   │               │           ├── AccountRepositoryPort.java
+    │   │               │           └── TokenVerificationPort.java
+    │   │               │
+    │   │               ├── application/
+    │   │               │   ├── dto/
+    │   │               │   │   ├── AccountResponse.java
+    │   │               │   │   └── LoginRequest.java
+    │   │               │   ├── port/
+    │   │               │   │   └── in/
+    │   │               │   │       └── AccountUseCase.java
+    │   │               │   └── service/
+    │   │               │       └── AccountServiceImpl.java
+    │   │               │
+    │   │               └── adapter/
+    │   │                   ├── in/
+    │   │                   │   └── web/
+    │   │                   │       ├── AccountController.java
+    │   │                   │       └── filter/
+    │   │                   │           └── TokenAuthenticationFilter.java
+    │   │                   └── out/
+    │   │                       ├── firebase/
+    │   │                       │   └── FirebaseTokenVerifierAdapter.java
+    │   │                       └── persistence/
+    │   │                           └── mongodb/
+    │   │                               ├── AccountDocument.java
+    │   │                               ├── AccountMongoRepository.java
+    │   │                               └── AccountPersistenceAdapter.java
+    │   │
+    │   └── resources/
+    │       ├── application.properties
+    │       └── serviceAccountKey.json
+    │
+    └── test/
+        └── ...
