@@ -1,10 +1,12 @@
 package com.authentication.microservice_authentication.application.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.authentication.microservice_authentication.application.dto.AccountNameAndPhoto;
 import com.authentication.microservice_authentication.application.dto.LoginRequest;
 import com.authentication.microservice_authentication.application.port.in.AccountUseCase;
 import com.authentication.microservice_authentication.domain.model.Account;
@@ -60,5 +62,12 @@ public class AccountServiceImpl implements AccountUseCase {
   private VerifiedToken verifyToken(String tokenID) {
     return tokenVerificationPort.verify(tokenID).orElseThrow(() -> new SecurityException("Invalid Token"));
   }
+
+  @Override
+  public List<AccountNameAndPhoto> getAllAccounts() {
+    return accountRepositoryPort.findAll();
+  }
+
+
 
 }
