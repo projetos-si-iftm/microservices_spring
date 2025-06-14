@@ -1,0 +1,12 @@
+{
+	"id": 1,
+	"title": "Matemática",
+	"subtitle": "Financeira",
+	"background": "link-imagem",
+    "theme": "tema-da-turma",
+	"students": "alunos vinculados",
+	"createIn": "LocalDateTime",
+	"updateIn": "LocalDateTime",
+	"active": "true"
+}
+
