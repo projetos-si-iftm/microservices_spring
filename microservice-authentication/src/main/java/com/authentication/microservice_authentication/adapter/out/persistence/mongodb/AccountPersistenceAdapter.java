@@ -3,7 +3,6 @@ package com.authentication.microservice_authentication.adapter.out.persistence.m
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import com.authentication.microservice_authentication.adapter.in.web.AccountController;
 import com.authentication.microservice_authentication.application.dto.AccountNameAndPhoto;
 import com.authentication.microservice_authentication.domain.model.Account;
 import com.authentication.microservice_authentication.domain.port.out.AccountRepositoryPort;

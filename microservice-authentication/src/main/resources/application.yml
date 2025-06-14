@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://erikvilar:erikav1@cluster0.wt9zg.mongodb.net
-      database: microservice-authenticationDB
+      database: microservice-classroomDB
   banner:
     location: classpath:banner/banner.txt
   application:
