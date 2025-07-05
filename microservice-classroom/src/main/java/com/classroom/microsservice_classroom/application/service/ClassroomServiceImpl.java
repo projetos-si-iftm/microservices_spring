@@ -3,13 +3,16 @@ package com.classroom.microsservice_classroom.application.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.classroom.microsservice_classroom.application.dto.Request;
 import com.classroom.microsservice_classroom.application.port.in.ClassroomUseCase;
 import com.classroom.microsservice_classroom.domain.Classroom;
 import com.classroom.microsservice_classroom.domain.port.out.ClassroomRepositoryPort;
-
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.CREATED;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -19,18 +22,13 @@ public class ClassroomServiceImpl implements ClassroomUseCase {
     private final ClassroomRepositoryPort port;
 
     @Override
-    public Classroom createOrUpdate(Request request) {
-        return port.findById(request.getId()).map(classroom -> {
-            classroom.setId(request.getId());
-            classroom.setTitle(request.getTitle());
-            classroom.setSubtitle(request.getSubtitle());
-            classroom.setTheme(request.getTheme());
-            classroom.setBackground(request.getBackground());
-            classroom.setActive(request.isActive());
-            classroom.setUpdateIn(LocalDateTime.now());
-            return port.save(classroom);
-        }).orElseGet(() -> {
-            Classroom classroom = Classroom.builder()
+    public Optional<Classroom> getById(int id) {
+        return port.findById(id);
+    }
+
+
+    private Classroom create(Request request) {
+     Classroom classroom = Classroom.builder()
                     .id(request.getId())
                     .title(request.getTitle())
                     .subtitle(request.getSubtitle())
@@ -40,12 +38,39 @@ public class ClassroomServiceImpl implements ClassroomUseCase {
                     .createIn(LocalDateTime.now())
                     .build();
             return port.save(classroom);
-        });
     }
 
+  
+    private Classroom update(Request request) {
+     return port.findById(request.getId()).map(classroom -> {
+            classroom.setId(request.getId());
+            classroom.setTitle(request.getTitle());
+            classroom.setSubtitle(request.getSubtitle());
+            classroom.setTheme(request.getTheme());
+            classroom.setBackground(request.getBackground());
+            classroom.setActive(request.isActive());
+            classroom.setUpdateIn(LocalDateTime.now());
+            return port.save(classroom);
+    }).get();
+
+}
+
+private Request mapToResponse(Classroom classroom) {
+        return Request.builder()
+                .id(classroom.getId())
+                .title(classroom.getTitle())
+                .subtitle(classroom.getSubtitle())
+                .theme(classroom.getTheme())
+                .background(classroom.getBackground())
+                .active(classroom.isActive())
+                .build();
+    }
     @Override
-    public Optional<Classroom> getById(int id) {
-        return port.findById(id);
+    public ResponseEntity<Request> createOrUpdate(Request request) {
+       if(port.findById(request.getId()).isPresent()){
+       
+        return new ResponseEntity<>(mapToResponse(update(request)), OK);
+       }
+       return new ResponseEntity<>(mapToResponse(create(request)),CREATED);
     }
-
 }
