@@ -44,7 +44,7 @@ public class AccountServiceImpl implements AccountUseCase {
           .name(authToken.getName())
           .email(authToken.getEmail())
           .photo(authToken.getPicture())
-          .role(AccountRole.STUDENT) // < -- verificar essa linha apos concluido
+          .role(AccountRole.STUDENT)
           .active(true)
           .createdAt(LocalDateTime.now())
           .build();
@@ -68,6 +68,10 @@ public class AccountServiceImpl implements AccountUseCase {
     return accountRepositoryPort.findAll();
   }
 
-
-
+   public Optional<VerifiedToken> validateToken(String token) {
+        if (token == null || token.isBlank()) {
+            return Optional.empty(); 
+        }
+        return tokenVerificationPort.verify(token);
+    }
 }

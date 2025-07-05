@@ -6,7 +6,7 @@ spring:
   banner:
     location: classpath:banner/banner.txt
   application:
-    name: microservice-classroom
+    name: microservice-classrooms
 eureka:
   client:
     service-url:

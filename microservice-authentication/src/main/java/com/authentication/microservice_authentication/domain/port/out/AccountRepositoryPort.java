@@ -7,7 +7,6 @@ import java.util.Optional;
 import com.authentication.microservice_authentication.application.dto.AccountNameAndPhoto;
 import com.authentication.microservice_authentication.domain.model.Account;
 
-// Definindo o que desejo fazer na aplicação
 public interface AccountRepositoryPort {
 
     Account save(Account account);

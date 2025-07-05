@@ -5,20 +5,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import com.authentication.microservice_authentication.application.dto.AccountNameAndPhoto;
 import com.authentication.microservice_authentication.domain.model.Account;
+
 import com.authentication.microservice_authentication.domain.port.out.AccountRepositoryPort;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component // Anotação para que o Spring gerencie este componente
+@Component 
 @RequiredArgsConstructor
 public class AccountPersistenceAdapter implements AccountRepositoryPort{
 
-
     private final AccountMongoRepository mongoRepository;
+    
 
-
-    // Métodos de mapeamento para converter entre o modelo de domínio e o documento de persistência
     private AccountDocument toDocument(Account account) {
         AccountDocument doc = new AccountDocument();
         doc.setId(account.getId());
@@ -45,8 +44,6 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort{
         );
     }
 
- 
-    
     @Override
     public Account save(Account account) {
         AccountDocument document = toDocument(account);
@@ -58,7 +55,7 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort{
     public Optional<Account> findById(String id) {
         return mongoRepository.findById(id).map(this::toDomain);
     }
-        // A < -- porta de entrada
+  
     @Override
     public Optional<Account> findByEmail(String email) {
         return mongoRepository.findByEmail(email).map(this::toDomain);
@@ -69,4 +66,9 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort{
     public List<AccountNameAndPhoto> findAll() {
         return mongoRepository.findAll().stream().map(acc -> new AccountNameAndPhoto(acc.getId(), acc.getName(), acc.getPhoto())).toList();
     }
+
+ 
+  
+
+   
 }

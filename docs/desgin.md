@@ -1,6 +1,5 @@
     # Microservico-authentication/ 
-                    **08-06-2025**
-                    @Autor: Erik Vilar
+    **08-06-2025** @Autor: Erik Vilar
 
     ## Concepts
     
@@ -10,7 +9,7 @@
         - (Port and Adapters): 
         - (Application & Domain): Contém a lógica de negócio pura.
         - (Ports): São as interfaces que definem como o mundo exterior (Outbound Ports).
-        - (Adapters): São as implementações concretos das portas. Um controller REST é um inbound (in) Adapter. Uma         implementação de repositorio com MongoDB e um outbound(out) Adapter.
+        - (Adapters): São as implementações concretos das portas. Um controller REST é um inbound (in) Adapter. Uma      implementação de repositorio com MongoDB e um outbound(out) Adapter.
 
     ### 3 - Dominio
         - Esta camada e a mais importante, ela nao conhece o spring não conhece o Mongo e nao conhece o REST, ela so conhece as regras de negocio Account
@@ -23,7 +22,7 @@
 
         - Camada responsável pela lógica de negócio, elá implementa os casos de uso do sistema ex:(CRUD)
            - Porta de entrada (Inbound port):
-                    -Define o que a aplicação pode fazer, e um contrato para os adaptadores de entrada (Controllers)
+           - Define o que a aplicação pode fazer, e um contrato para os adaptadores de entrada (Controllers)
     
 
 

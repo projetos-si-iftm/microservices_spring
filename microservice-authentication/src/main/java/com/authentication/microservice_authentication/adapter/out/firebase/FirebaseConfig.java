@@ -19,8 +19,7 @@ public class FirebaseConfig {
             .setCredentials(GoogleCredentials.fromStream(
                 new ClassPathResource("serviceAccountKey.json").getInputStream()))
             .build();
-
-        // Evita erro de reinicialização em ambientes de dev com hot reload
+            
         if (FirebaseApp.getApps().isEmpty()) {
             return FirebaseApp.initializeApp(options);
         } else {

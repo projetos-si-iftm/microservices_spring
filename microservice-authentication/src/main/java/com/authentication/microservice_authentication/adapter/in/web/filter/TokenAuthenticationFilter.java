@@ -32,7 +32,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // 1. Extrair o token do cabeçalho
+
         Optional<String> token = extractToken(request);
 
         token.ifPresent(authToken -> {
