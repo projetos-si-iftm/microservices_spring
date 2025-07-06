@@ -20,7 +20,6 @@ import com.authentication.microservice_authentication.application.dto.AccountNam
 import com.authentication.microservice_authentication.application.dto.AccountResponse;
 import com.authentication.microservice_authentication.application.dto.LoginRequest;
 import com.authentication.microservice_authentication.application.port.in.AccountUseCase;
-import com.authentication.microservice_authentication.domain.model.Account;
 import com.authentication.microservice_authentication.domain.model.VerifiedToken;
 
 import lombok.RequiredArgsConstructor;
@@ -36,27 +35,23 @@ public class AccountController {
 
       @PostMapping("/login/google")
       public ResponseEntity<AccountResponse> loginWithGoogle(@RequestBody LoginRequest loginRequest) throws Exception {
-            Account account = accountUseCase.createOrUpdateAccountFromLogin(loginRequest);
-            return ResponseEntity.ok(mapToResponse(account));
+            return accountUseCase.createOrUpdateAccountFromLogin(loginRequest);
       }
 
+      @ResponseStatus(OK)
       @GetMapping("/accounts/{id}")
-      public ResponseEntity<AccountResponse> getAccount(@PathVariable String id) {
-            return accountUseCase.getAccountById(id)
-                        .map(this::mapToResponse)
-                        .map(ResponseEntity::ok)
-                        .orElse(ResponseEntity.notFound().build());
+      public AccountResponse getAccount(@PathVariable String id) {
+            return accountUseCase.getAccountById(id);
       }
 
       @ResponseStatus(OK)
       @GetMapping("/accounts/all")
       public List<AccountNameAndPhoto> getAccounts() {
-
             return accountUseCase.getAllAccounts();
       }
 
       @PostMapping("/validate")
-      public ResponseEntity<Void> validateRequest(@RequestHeader("Authorization") String authHeader) throws Exception {
+      public ResponseEntity<Void> validateRequest(@RequestHeader("Authorization") String authHeader) {
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 
@@ -74,15 +69,5 @@ public class AccountController {
                   return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
       }
-
-      private AccountResponse mapToResponse(Account account) {
-            return AccountResponse.builder()
-                        .id(account.getId())
-                        .name(account.getName())
-                        .email(account.getEmail())
-                        .photo(account.getPhoto())
-                        .role(account.getRole().name())
-                        .active(account.getActive())
-                        .build();
-      }
+ 
 }

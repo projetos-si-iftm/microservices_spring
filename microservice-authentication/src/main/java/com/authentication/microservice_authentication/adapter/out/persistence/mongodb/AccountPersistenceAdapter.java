@@ -1,6 +1,5 @@
 package com.authentication.microservice_authentication.adapter.out.persistence.mongodb;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import com.authentication.microservice_authentication.application.dto.AccountNameAndPhoto;
@@ -11,12 +10,11 @@ import com.authentication.microservice_authentication.domain.port.out.AccountRep
 import java.util.List;
 import java.util.Optional;
 
-@Component 
+@Component
 @RequiredArgsConstructor
-public class AccountPersistenceAdapter implements AccountRepositoryPort{
+public class AccountPersistenceAdapter implements AccountRepositoryPort {
 
     private final AccountMongoRepository mongoRepository;
-    
 
     private AccountDocument toDocument(Account account) {
         AccountDocument doc = new AccountDocument();
@@ -33,15 +31,14 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort{
 
     private Account toDomain(AccountDocument document) {
         return new Account(
-            document.getId(),
-            document.getName(),
-            document.getEmail(),
-            document.getPhoto(),
-            document.getRole(),
-            document.getActive(),
-            document.getCreatedAt(),
-            document.getUpdatedAt()
-        );
+                document.getId(),
+                document.getName(),
+                document.getEmail(),
+                document.getPhoto(),
+                document.getRole(),
+                document.getActive(),
+                document.getCreatedAt(),
+                document.getUpdatedAt());
     }
 
     @Override
@@ -55,20 +52,15 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort{
     public Optional<Account> findById(String id) {
         return mongoRepository.findById(id).map(this::toDomain);
     }
-  
+
     @Override
     public Optional<Account> findByEmail(String email) {
         return mongoRepository.findByEmail(email).map(this::toDomain);
     }
-
 
     @Override
     public List<AccountNameAndPhoto> findAll() {
         return mongoRepository.findAll().stream().map(acc -> new AccountNameAndPhoto(acc.getId(), acc.getName(), acc.getPhoto())).toList();
     }
 
- 
-  
-
-   
 }
