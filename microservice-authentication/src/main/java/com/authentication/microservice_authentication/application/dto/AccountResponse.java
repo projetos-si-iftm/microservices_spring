@@ -12,5 +12,6 @@ public class AccountResponse {
     private String email;
     private String photo;
     private String role;
+    private String fluxToken;
     private Boolean active;
 }

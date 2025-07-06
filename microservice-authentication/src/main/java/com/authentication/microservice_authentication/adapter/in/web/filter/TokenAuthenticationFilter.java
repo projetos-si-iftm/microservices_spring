@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.authentication.microservice_authentication.application.service.TokenService;
 import com.authentication.microservice_authentication.domain.model.VerifiedToken;
 import com.authentication.microservice_authentication.domain.port.in.TokenVerificationPort;
 
@@ -25,8 +26,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private final TokenVerificationPort tokenVerificationPort;
 
+    private final TokenService tokenService;
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -36,7 +37,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         Optional<String> token = extractToken(request);
 
         token.ifPresent(authToken -> {
-            Optional<VerifiedToken> verifiedTokenOpt = tokenVerificationPort.verify(authToken);
+            Optional<VerifiedToken> verifiedTokenOpt = tokenService.validateToken(authToken);
             verifiedTokenOpt.ifPresent(verifiedToken -> {
                 UserDetails userDetails = new User(verifiedToken.getUid(), "", Collections.emptyList());
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

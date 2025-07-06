@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import com.authentication.microservice_authentication.application.dto.AccountNam
 import com.authentication.microservice_authentication.application.dto.AccountResponse;
 import com.authentication.microservice_authentication.application.dto.LoginRequest;
 import com.authentication.microservice_authentication.application.port.in.AccountUseCase;
+import com.authentication.microservice_authentication.application.port.in.TokenExchange;
 import com.authentication.microservice_authentication.domain.model.Account;
 import com.authentication.microservice_authentication.domain.model.AccountRole;
 import com.authentication.microservice_authentication.domain.model.VerifiedToken;
@@ -30,18 +32,31 @@ public class AccountServiceImpl implements AccountUseCase {
 
   private final TokenVerificationPort tokenVerificationPort;
 
+  private final TokenExchange tokenExchange;
+
   LocalDateTime now = LocalDateTime.now();
 
   @Override
   public ResponseEntity<AccountResponse> createOrUpdateAccountFromLogin(LoginRequest loginRequest) {
 
     VerifiedToken authToken = verifyToken(loginRequest.getIdToken());
-    Optional<Account> existingAccount = accountRepositoryPort.findById(authToken.getUid());
-    if (existingAccount.isPresent()) {
-      return new ResponseEntity<>(mapToResponse(update(authToken, existingAccount.get())), OK);
 
+    Optional<Account> existingAccount = accountRepositoryPort.findById(authToken.getUid());
+    AccountResponse savedAccount;
+    HttpStatus status;
+    if (existingAccount.isPresent()) {
+ 
+     savedAccount =  mapToResponse(update(authToken, existingAccount.get()));
+      status = OK;
+    }else{
+    savedAccount  = mapToResponse(create(authToken));
+    
+    status = CREATED;
     }
-    return new ResponseEntity<>(mapToResponse(create(authToken)), CREATED);
+    String fluxToken = tokenExchange.generatedToken(authToken);
+    savedAccount.setFluxToken(fluxToken);
+
+    return new ResponseEntity<>(savedAccount, status);
   }
 
   @Override
@@ -55,14 +70,16 @@ public class AccountServiceImpl implements AccountUseCase {
     return accountRepositoryPort.findAll();
   }
 
+  @Override
   public Optional<VerifiedToken> validateToken(String token) {
     if (token == null || token.isBlank()) {
       return Optional.empty();
     }
-    return tokenVerificationPort.verify(token);
+    return tokenExchange.validateToken(token);
   }
 
-  private Account update(VerifiedToken verifiedToken, Account existingAccount) {
+  private Account update(VerifiedToken verifiedToken,
+   Account existingAccount) {
     existingAccount.setName(verifiedToken.getName());
     existingAccount.setPhoto(verifiedToken.getPicture());
     existingAccount.setUpdatedAt(now);
