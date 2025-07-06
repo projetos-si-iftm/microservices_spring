@@ -1,9 +1,11 @@
-package com.classroom.microsservice_classroom.adapter.out.Persistence;
+package com.classroom.microsservice_classroom.adapter.out.Persistence.adapter;
 
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
+import com.classroom.microsservice_classroom.adapter.out.Persistence.documents.ClassroomDocument;
+import com.classroom.microsservice_classroom.adapter.out.Persistence.repository.ClassroomMongoRepository;
 import com.classroom.microsservice_classroom.domain.Classroom;
 import com.classroom.microsservice_classroom.domain.port.out.ClassroomRepositoryPort;
 
@@ -18,24 +20,28 @@ public class ClassroomPersistenceAdapter implements ClassroomRepositoryPort {
     private ClassroomDocument toDocument(Classroom classroom) {
         ClassroomDocument doc = new ClassroomDocument();
         doc.setId(classroom.getId());
-        doc.setTitle(classroom.getTitle());
-        doc.setSubtitle(classroom.getSubtitle());
-        doc.setTheme(classroom.getTheme());
-        doc.setBackground(classroom.getBackground());
-        doc.setActive(classroom.isActive());
-        doc.setUpdateIn(classroom.getUpdateIn());
+        doc.setName(classroom.getName());
+        doc.setDescription(classroom.getDescription());
+        doc.setImage(classroom.getImage());
+        doc.setCode(classroom.getCode());
+        doc.setStudents(classroom.getStudents());
+        doc.setSubjects(classroom.getSubjects());
         doc.setCreateIn(classroom.getCreateIn());
-
+        doc.setUpdateIn(classroom.getUpdateIn());
+        doc.setActive(classroom.isActive());
+        
         return doc;
     }
 
     private Classroom toDomain(ClassroomDocument doc) {
         return new Classroom(
                 doc.getId(),
-                doc.getTitle(),
-                doc.getSubtitle(),
-                doc.getBackground(),
-                doc.getTheme(),
+                doc.getName(),
+                doc.getDescription(),
+                doc.getImage(),
+                doc.getCode(),
+                doc.getStudents(),
+                doc.getSubjects(),
                 doc.getCreateIn(),
                 doc.getUpdateIn(),
                 doc.isActive());

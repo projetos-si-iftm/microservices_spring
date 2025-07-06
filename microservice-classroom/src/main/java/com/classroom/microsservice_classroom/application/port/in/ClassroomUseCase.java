@@ -5,11 +5,10 @@ import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 
-import com.classroom.microsservice_classroom.application.dto.Request;
+import com.classroom.microsservice_classroom.application.dto.ClassroomDTO;
 import com.classroom.microsservice_classroom.domain.Classroom;
 
 public interface ClassroomUseCase {
-
-    ResponseEntity<Request> createOrUpdate(Request request);
+    ResponseEntity<ClassroomDTO> createOrUpdate(ClassroomDTO request);
     Optional<Classroom> getById(int id);
 }

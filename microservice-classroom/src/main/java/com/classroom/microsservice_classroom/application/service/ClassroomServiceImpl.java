@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.classroom.microsservice_classroom.application.dto.Request;
+import com.classroom.microsservice_classroom.application.dto.ClassroomDTO;
 import com.classroom.microsservice_classroom.application.port.in.ClassroomUseCase;
 import com.classroom.microsservice_classroom.domain.Classroom;
 import com.classroom.microsservice_classroom.domain.port.out.ClassroomRepositoryPort;
@@ -26,53 +26,43 @@ public class ClassroomServiceImpl implements ClassroomUseCase {
         return port.findById(id);
     }
 
-    private Classroom create(Request request) {
+    private Classroom create(ClassroomDTO request) {
         Classroom classroom = Classroom.builder()
                 .id(request.getId())
-                .title(request.getTitle())
-                .subtitle(request.getSubtitle())
-                .theme(request.getTheme())
-                .background(request.getBackground())
-                .active(request.isActive())
+                .name(request.getName())
+                .description(request.getDescription())
+                .image(request.getImage())
+                .code(request.getCode())
+                .students(request.getStudents())
+                .subjects(request.getSubjects())
                 .createIn(LocalDateTime.now())
+                .updateIn(LocalDateTime.now())
                 .build();
         return port.save(classroom);
     }
 
-    private Classroom update(Request request, Classroom classroom) {
-
+    private Classroom update(ClassroomDTO request, Classroom classroom) {
         classroom.setId(request.getId());
-        classroom.setTitle(request.getTitle());
-        classroom.setSubtitle(request.getSubtitle());
-        classroom.setTheme(request.getTheme());
-        classroom.setBackground(request.getBackground());
-        classroom.setActive(request.isActive());
+        classroom.setName(request.getName());
+        classroom.setDescription(request.getDescription());
+        classroom.setImage(request.getImage());
+        classroom.setCode(request.getCode());
+        classroom.setStudents(request.getStudents());
+        classroom.setSubjects(request.getSubjects());
+        classroom.setCreateIn(request.getCreateIn());
         classroom.setUpdateIn(LocalDateTime.now());
         return port.save(classroom);
-
-    }
-
-    private Request mapToResponse(Classroom classroom) {
-        return Request.builder()
-                .id(classroom.getId())
-                .title(classroom.getTitle())
-                .subtitle(classroom.getSubtitle())
-                .theme(classroom.getTheme())
-                .background(classroom.getBackground())
-                .active(classroom.isActive())
-                .build();
     }
 
     @Override
-    public ResponseEntity<Request> createOrUpdate(Request request) {
+    public ResponseEntity<ClassroomDTO> createOrUpdate(ClassroomDTO request) {
 
         Optional<Classroom> classroom = port.findById(request.getId());
         if (classroom.isPresent()) {
             return new ResponseEntity<>(mapToResponse(update(request, classroom.get())), OK);
         } else if (classroom.isEmpty()) {
             return new ResponseEntity<>(mapToResponse(create(request)), CREATED);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(BAD_REQUEST);
         }
 
