@@ -1,10 +1,11 @@
-package com.classroom.microsservice_classroom.application.dto;
+package com.classroom.microsservice_classroom.application.dto.ClassroomDTO;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,9 +13,8 @@ import lombok.Data;
 @Builder
 public class ClassroomDTO {
     
-    @NotNull(message = "{error.invalid.object}")
-    private Integer id;
     
+    private String id;
     @NotBlank(message = "{error.invalid.object}")
     private String name;
     @NotBlank(message = "{error.invalid.object}")
@@ -23,11 +23,9 @@ public class ClassroomDTO {
     private String image;
     @NotBlank(message = "{error.invalid.object}")
     private String code;
-
-    private List<StudentDTO> students;
-    private List<SubjectDTO> subjects;
-    
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "America/Sao_Paulo")
     private LocalDateTime createIn;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "America/Sao_Paulo")
     private LocalDateTime updateIn;
     private boolean active;
 

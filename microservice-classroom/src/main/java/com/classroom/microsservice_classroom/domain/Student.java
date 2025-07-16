@@ -2,6 +2,8 @@ package com.classroom.microsservice_classroom.domain;
 
 import java.time.LocalDateTime;
 
+import org.bson.types.ObjectId;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Student {
 
-    private Integer id;
+    private ObjectId id;
     private String name;
     private String email;
 

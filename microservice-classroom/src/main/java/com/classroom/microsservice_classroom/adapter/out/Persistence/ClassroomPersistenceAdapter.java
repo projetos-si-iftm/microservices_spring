@@ -1,7 +1,8 @@
-package com.classroom.microsservice_classroom.adapter.out.Persistence.adapter;
+package com.classroom.microsservice_classroom.adapter.out.Persistence;
 
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 
 import com.classroom.microsservice_classroom.adapter.out.Persistence.documents.ClassroomDocument;
@@ -15,48 +16,44 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ClassroomPersistenceAdapter implements ClassroomRepositoryPort {
 
-    private final ClassroomMongoRepository repository;
+    private final ClassroomMongoRepository mongoRepository;
 
     private ClassroomDocument toDocument(Classroom classroom) {
         ClassroomDocument doc = new ClassroomDocument();
+
         doc.setId(classroom.getId());
         doc.setName(classroom.getName());
-        doc.setDescription(classroom.getDescription());
         doc.setImage(classroom.getImage());
         doc.setCode(classroom.getCode());
-        doc.setStudents(classroom.getStudents());
-        doc.setSubjects(classroom.getSubjects());
+        doc.setDescription(classroom.getDescription());
         doc.setCreateIn(classroom.getCreateIn());
         doc.setUpdateIn(classroom.getUpdateIn());
         doc.setActive(classroom.isActive());
-        
         return doc;
     }
 
-    private Classroom toDomain(ClassroomDocument doc) {
+    private Classroom toDomain(ClassroomDocument document) {
         return new Classroom(
-                doc.getId(),
-                doc.getName(),
-                doc.getDescription(),
-                doc.getImage(),
-                doc.getCode(),
-                doc.getStudents(),
-                doc.getSubjects(),
-                doc.getCreateIn(),
-                doc.getUpdateIn(),
-                doc.isActive());
+                document.getId(),
+                document.getName(),
+                document.getDescription(),
+                document.getImage(),
+                document.getCode(),
+                document.getCreateIn(),
+                document.getUpdateIn(),
+                document.isActive());
     }
 
     @Override
     public Classroom save(Classroom classroom) {
         ClassroomDocument document = toDocument(classroom);
-        ClassroomDocument savDocument = repository.save(document);
-        return toDomain(savDocument);
+        ClassroomDocument saveDocument = mongoRepository.save(document);
+        return toDomain(saveDocument);
     }
 
     @Override
-    public Optional<Classroom> findById(Integer id) {
-        return repository.findById(id).map(this::toDomain);
+    public Optional<Classroom> findById(String id) {
+        return mongoRepository.findById(id).map(this::toDomain);
     }
 
 }

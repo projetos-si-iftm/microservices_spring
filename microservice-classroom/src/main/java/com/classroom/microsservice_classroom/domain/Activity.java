@@ -20,7 +20,7 @@ public class Activity {
     private String description;
 
     private Score score;
-    private List<Question> questions;
+
 
     private LocalDateTime createIn;
     private LocalDateTime updateIn;

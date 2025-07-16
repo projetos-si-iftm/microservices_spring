@@ -3,68 +3,96 @@ package com.classroom.microsservice_classroom.application.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.classroom.microsservice_classroom.application.dto.ClassroomDTO;
+import com.classroom.microsservice_classroom.application.dto.ClassroomDTO.ClassroomDTO;
 import com.classroom.microsservice_classroom.application.port.in.ClassroomUseCase;
 import com.classroom.microsservice_classroom.domain.Classroom;
 import com.classroom.microsservice_classroom.domain.port.out.ClassroomRepositoryPort;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+// Classroom service implementa Classroom useCase
 public class ClassroomServiceImpl implements ClassroomUseCase {
 
-    private final ClassroomRepositoryPort port;
+    private final ClassroomRepositoryPort classroomRepositoryPort;
 
-    @Override
-    public Optional<Classroom> getById(int id) {
-        return port.findById(id);
+
+       @Override
+    public ResponseEntity<ClassroomDTO> updateClassroom(ClassroomDTO request) {
+       return new ResponseEntity<>(update(request.getId(),request), OK );
     }
 
-    private Classroom create(ClassroomDTO request) {
+
+
+
+    @Override
+    public ResponseEntity<ClassroomDTO> createClassroom(ClassroomDTO request) {
+        return new ResponseEntity<>(create(request), CREATED );
+    }
+
+    @Override
+    public ClassroomDTO getById(String id) {
+
+        return classroomRepositoryPort.findById(id).map(this::mapToResponse).get();
+
+    }
+
+    private ClassroomDTO create(ClassroomDTO request) {
+        String code = UUID.randomUUID().toString().substring(0, 6);
+
         Classroom classroom = Classroom.builder()
-                .id(request.getId())
+                .id(UUID.randomUUID().toString())
                 .name(request.getName())
+                .code(code)
                 .description(request.getDescription())
                 .image(request.getImage())
-                .code(request.getCode())
-                .students(request.getStudents())
-                .subjects(request.getSubjects())
+                .active(request.isActive())
                 .createIn(LocalDateTime.now())
-                .updateIn(LocalDateTime.now())
                 .build();
-        return port.save(classroom);
-    }
-
-    private Classroom update(ClassroomDTO request, Classroom classroom) {
-        classroom.setId(request.getId());
-        classroom.setName(request.getName());
-        classroom.setDescription(request.getDescription());
-        classroom.setImage(request.getImage());
-        classroom.setCode(request.getCode());
-        classroom.setStudents(request.getStudents());
-        classroom.setSubjects(request.getSubjects());
-        classroom.setCreateIn(request.getCreateIn());
-        classroom.setUpdateIn(LocalDateTime.now());
-        return port.save(classroom);
-    }
-
-    @Override
-    public ResponseEntity<ClassroomDTO> createOrUpdate(ClassroomDTO request) {
-
-        Optional<Classroom> classroom = port.findById(request.getId());
-        if (classroom.isPresent()) {
-            return new ResponseEntity<>(mapToResponse(update(request, classroom.get())), OK);
-        } else if (classroom.isEmpty()) {
-            return new ResponseEntity<>(mapToResponse(create(request)), CREATED);
-        } else {
-            return new ResponseEntity<>(BAD_REQUEST);
-        }
+        Classroom savedClassroom = classroomRepositoryPort.save(classroom);
+        return mapToResponse(savedClassroom);
 
     }
+
+    public ClassroomDTO update(String id, ClassroomDTO request) {
+        Optional<Classroom> classroomExisting = classroomRepositoryPort.findById(request.getId());
+        classroomExisting.get().setId(request.getId());
+        classroomExisting.get().setName(request.getName());
+        classroomExisting.get().setImage(request.getImage());
+        classroomExisting.get().setCode(request.getCode());
+        classroomExisting.get().setActive(request.isActive());
+        classroomExisting.get().setDescription(request.getDescription());
+        classroomExisting.get().setUpdateIn(LocalDateTime.now());
+
+        Classroom updatedClassroom = classroomRepositoryPort.save(classroomExisting.get());
+        return mapToResponse(updatedClassroom);
+    }
+
+    private ClassroomDTO mapToResponse(Classroom classroom) {
+        return ClassroomDTO.builder()
+                .id(classroom.getId())
+                .name(classroom.getName())
+                .image(classroom.getImage())
+                .code(classroom.getCode())
+                .description(classroom.getDescription())
+                .createIn(classroom.getCreateIn())
+                .updateIn(classroom.getUpdateIn())
+                .active(classroom.isActive())
+                .build();
+
+    }
+
+
+
+
+ 
+
 }

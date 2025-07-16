@@ -1,9 +1,8 @@
 package com.classroom.microsservice_classroom.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.bson.types.ObjectId;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,15 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Classroom {
 
-    private Integer id;
+    private String id;
     private String name;
     private String description;
     private String image;
-    private String code;
-    
-    private List<Student> students;
-    private List<Subject> subjects;
-
+    private String code; 
     private LocalDateTime createIn;
     private LocalDateTime updateIn;
     private boolean active; 

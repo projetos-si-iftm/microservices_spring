@@ -1,14 +1,14 @@
 package com.classroom.microsservice_classroom.application.port.in;
 
-import java.util.Optional;
-
 
 import org.springframework.http.ResponseEntity;
 
-import com.classroom.microsservice_classroom.application.dto.ClassroomDTO;
-import com.classroom.microsservice_classroom.domain.Classroom;
+import com.classroom.microsservice_classroom.application.dto.ClassroomDTO.ClassroomDTO;
+
 
 public interface ClassroomUseCase {
-    ResponseEntity<ClassroomDTO> createOrUpdate(ClassroomDTO request);
-    Optional<Classroom> getById(int id);
+
+    ResponseEntity<ClassroomDTO> updateClassroom(ClassroomDTO request);
+    ResponseEntity<ClassroomDTO> createClassroom(ClassroomDTO request);
+    ClassroomDTO getById(String id);
 }

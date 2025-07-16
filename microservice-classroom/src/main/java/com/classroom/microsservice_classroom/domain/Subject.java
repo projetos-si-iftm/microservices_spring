@@ -1,7 +1,7 @@
 package com.classroom.microsservice_classroom.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,9 +20,6 @@ public class Subject {
     private String colorTheme;
     private String subtitle;
     private String imageUrl;
-    
-    private List<Activity> activities;
-
     private LocalDateTime createIn;
     private LocalDateTime updateIn;
     private boolean active;
