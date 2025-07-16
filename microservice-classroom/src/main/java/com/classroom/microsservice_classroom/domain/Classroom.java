@@ -1,9 +1,10 @@
 package com.classroom.microsservice_classroom.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import org.bson.types.ObjectId;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +21,8 @@ public class Classroom {
     private String description;
     private String image;
     private String code; 
+    @Size(max = 8)
+    private List<Subject> subjects;
     private LocalDateTime createIn;
     private LocalDateTime updateIn;
     private boolean active; 

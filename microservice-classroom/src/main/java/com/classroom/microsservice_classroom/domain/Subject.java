@@ -2,6 +2,7 @@ package com.classroom.microsservice_classroom.domain;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +14,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Subject {
-
-    private Integer id;
+    
+    @Id
+    private String id;
     private String name;
     private String title;
     private String colorTheme;

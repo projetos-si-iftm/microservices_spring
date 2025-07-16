@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,15 +15,13 @@ import lombok.Data;
 @Document("Subject")
 public class SubjectDocument {
 
-    private Integer id;
+    private String id;
     private String name;
     private String title;
     private String colorTheme;
     private String subtitle;
     private String imageUrl;
     
-    @DBRef
-    private List<ActivityDocument> activities;
 
     @CreatedDate
     private LocalDateTime createIn;

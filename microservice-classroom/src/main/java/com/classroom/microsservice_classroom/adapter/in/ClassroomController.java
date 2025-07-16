@@ -1,5 +1,7 @@
 package com.classroom.microsservice_classroom.adapter.in;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,10 @@ public class ClassroomController {
     @PostMapping("/update")
     public ResponseEntity<ClassroomDTO> update(@RequestBody @Valid ClassroomDTO request) {
         return useCase.updateClassroom(request);
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable String id){
+        return useCase.deleteClassroom(id);
     }
 
 }

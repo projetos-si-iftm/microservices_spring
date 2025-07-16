@@ -9,6 +9,6 @@ import com.classroom.microsservice_classroom.domain.Classroom;
 public interface ClassroomRepositoryPort {
 
     Classroom save(Classroom classroom);
-
+    String delete(String id);
     Optional<Classroom> findById(String id);
 }
