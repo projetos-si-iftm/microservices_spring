@@ -1,9 +1,8 @@
-package com.classroom.microsservice_classroom.application.dto.ClassroomDTO;
+package com.classroom.microsservice_classroom.application.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.classroom.microsservice_classroom.application.dto.SubjectDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.validation.constraints.NotBlank;
@@ -25,6 +24,7 @@ public class ClassroomDTO {
     private String image;
     private String code;
     private List<SubjectDTO> subjects;
+    private List<StudentDTO> students;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "America/Sao_Paulo")
     private LocalDateTime createIn;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "America/Sao_Paulo")

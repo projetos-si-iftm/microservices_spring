@@ -17,8 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Account {
-    // No domínio, o ID pode ser apenas um 'String'. Como ele será persistido 
-    // é um detalhe de implementação que não pertence aqui.
+
     private String id; 
     private String name;
     private String email;

@@ -1,6 +1,7 @@
 package com.classroom.microsservice_classroom.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,6 +24,7 @@ public class Classroom {
     private String code; 
     @Size(max = 8)
     private List<Subject> subjects;
+    private List<Student> students;
     private LocalDateTime createIn;
     private LocalDateTime updateIn;
     private boolean active; 

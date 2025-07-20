@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class StudentDTO {
 
-    private Integer id;
+    private String id;
     private String name;
     private String email;
 

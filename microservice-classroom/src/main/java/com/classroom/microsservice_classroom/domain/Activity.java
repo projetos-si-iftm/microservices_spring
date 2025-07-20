@@ -14,14 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Activity {
 
-    private Integer id;
+    private String id;
     private String type;
     private String title;
     private String description;
-
-    private Score score;
-
-
+    private Student student;
     private LocalDateTime createIn;
     private LocalDateTime updateIn;
     private boolean active;

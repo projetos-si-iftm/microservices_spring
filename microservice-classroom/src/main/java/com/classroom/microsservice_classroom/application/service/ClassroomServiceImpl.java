@@ -2,17 +2,21 @@ package com.classroom.microsservice_classroom.application.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.classroom.microsservice_classroom.application.dto.ActivityDTO;
+import com.classroom.microsservice_classroom.application.dto.ClassroomDTO;
+import com.classroom.microsservice_classroom.application.dto.StudentDTO;
 import com.classroom.microsservice_classroom.application.dto.SubjectDTO;
-import com.classroom.microsservice_classroom.application.dto.ClassroomDTO.ClassroomDTO;
 import com.classroom.microsservice_classroom.application.port.in.ClassroomUseCase;
+import com.classroom.microsservice_classroom.domain.Activity;
 import com.classroom.microsservice_classroom.domain.Classroom;
+import com.classroom.microsservice_classroom.domain.Student;
 import com.classroom.microsservice_classroom.domain.Subject;
 import com.classroom.microsservice_classroom.domain.port.out.ClassroomRepositoryPort;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -21,7 +25,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Service
 @RequiredArgsConstructor
 // Classroom service implementa Classroom useCase
@@ -41,15 +46,62 @@ public class ClassroomServiceImpl implements ClassroomUseCase {
 
     @Override
     public ResponseEntity<String> deleteClassroom(String id) {
-        String response =  classroomRepositoryPort.delete(id);
-        return new ResponseEntity<>(response,OK);
+        String response = classroomRepositoryPort.delete(id);
+        return new ResponseEntity<>(response, OK);
+    }
+
+    @Override
+    public ResponseEntity<List<ClassroomDTO>> findAllClassrooms() {
+        List<Classroom> classrooms = classroomRepositoryPort.findAll();
+        List<ClassroomDTO> classroomsLstDTO = classrooms.stream().map(classList -> {
+            return mapToClassroomDTO(classList);
+        }).toList();
+        return new ResponseEntity<>(classroomsLstDTO, OK);
     }
 
     @Override
     public ClassroomDTO getById(String id) {
 
-        return classroomRepositoryPort.findById(id).map(this::mapToResponse).get();
+        return classroomRepositoryPort.findById(id).map(this::mapToClassroomDTO).get();
 
+    }
+
+    @Override
+    public ClassroomDTO addStudentToClassroom(String classroomCode, StudentDTO studentDTO) {
+        
+        Classroom classroom = classroomRepositoryPort.findClassroomBycode(classroomCode);
+        
+        log.info("Classroom {}",classroom);
+
+
+        boolean studentExists = classroom.getStudents().stream()
+                .anyMatch(student -> student.getEmail().equalsIgnoreCase(studentDTO.getEmail()));
+
+        if (studentExists) {
+            throw new RuntimeException("Aluno com o email " + studentDTO.getEmail() + " já está na turma.");
+        }
+
+        Student newStudent = mapToStudentDomain(studentDTO);
+
+        newStudent.setId(studentDTO.getId());
+        newStudent.setName(studentDTO.getName());
+        newStudent.setEmail(studentDTO.getEmail());
+        newStudent.setIngress(java.time.LocalDateTime.now());
+        newStudent.setActive(true);
+        classroom.getStudents().add(newStudent);
+        Classroom classroomSaved  = classroomRepositoryPort.save(classroom);
+    
+        return mapToClassroomDTO(classroomSaved);
+    }
+
+
+      @Override
+    public ResponseEntity<List<ClassroomDTO>> findClassroomsByStudentEmail(String studentEmail) {
+        log.info("Chamei a funcao de achar todos estudantes");
+        List<ClassroomDTO> classroomDTOs =  classroomRepositoryPort.findByStudentEmail(studentEmail).stream()
+                .map(this::mapToClassroomDTO) 
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(classroomDTOs, OK);
     }
 
     private ClassroomDTO create(ClassroomDTO request) {
@@ -57,20 +109,25 @@ public class ClassroomServiceImpl implements ClassroomUseCase {
 
         List<Subject> subjectsDomainList = request.getSubjects().stream()
                 .map(this::mapToSubjectDomain)
-                .collect(Collectors.toList());
+                .toList();
+
+        List<Student> studentsDomainList = request.getStudents().stream()
+                .map(this::mapToStudentDomain).toList();
 
         Classroom classroom = Classroom.builder()
                 .id(UUID.randomUUID().toString())
                 .name(request.getName())
                 .code(code)
                 .subjects(subjectsDomainList)
+                .students(studentsDomainList)
                 .description(request.getDescription())
                 .image(request.getImage())
                 .active(request.isActive())
                 .createIn(LocalDateTime.now())
                 .build();
+
         Classroom savedClassroom = classroomRepositoryPort.save(classroom);
-        return mapToResponse(savedClassroom);
+        return mapToClassroomDTO(savedClassroom);
 
     }
 
@@ -95,10 +152,10 @@ public class ClassroomServiceImpl implements ClassroomUseCase {
 
         Classroom updatedClassroom = classroomRepositoryPort.save(classroom);
 
-        return mapToResponse(updatedClassroom);
+        return mapToClassroomDTO(updatedClassroom);
     }
 
-    private ClassroomDTO mapToResponse(Classroom classroom) {
+    private ClassroomDTO mapToClassroomDTO(Classroom classroom) {
 
         List<SubjectDTO> subjectDTOs = classroom.getSubjects().stream()
                 .map(this::mapToSubjectDTOResponse)
@@ -144,6 +201,42 @@ public class ClassroomServiceImpl implements ClassroomUseCase {
                 .build();
     }
 
+    private StudentDTO mapStudentDTOResponse(Student student) {
+        return StudentDTO.builder()
+                .id(student.getId())
+                .name(student.getName())
+                .email(student.getEmail())
+                .ingress(student.getIngress())
+                .updateIn(student.getUpdateIn())
+                .active(student.isActive())
+                .build();
+
+    }
+
+    private Activity mapToActivityDomain(ActivityDTO request) {
+        return Activity.builder()
+                .id(UUID.randomUUID().toString().substring(0, 11))
+                .description(request.getDescription())
+                .title(request.getTitle())
+                .type(request.getType())
+                .active(false)
+                .createIn(null)
+                .createIn(null)
+                .build();
+
+    }
+
+    private Student mapToStudentDomain(StudentDTO request) {
+        return Student.builder()
+                .id(request.getId())
+                .name(request.getName())
+                .email(request.getEmail())
+                .ingress(request.getIngress())
+                .updateIn(request.getUpdateIn())
+                .active(request.isActive())
+                .build();
+    }
+
     private List<Subject> syncSubjects(List<SubjectDTO> subjectDTOsFromRequest, List<Subject> existingSubjects) {
         if (existingSubjects == null) {
             existingSubjects = new ArrayList<>();
@@ -170,5 +263,6 @@ public class ClassroomServiceImpl implements ClassroomUseCase {
         }).collect(Collectors.toList());
     }
 
+  
 
 }

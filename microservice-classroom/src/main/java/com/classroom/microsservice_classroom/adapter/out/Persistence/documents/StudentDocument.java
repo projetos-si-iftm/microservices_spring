@@ -11,7 +11,7 @@ import lombok.Data;
 @Document("Student")
 public class StudentDocument {
 
-    private Integer id;
+    private String id;
     private String name;
     private String email;
 

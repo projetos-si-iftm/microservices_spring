@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class ActivityDTO {
 
-    private Integer id;
+    private String id;
     private String type;
     private String title;
     private String description;

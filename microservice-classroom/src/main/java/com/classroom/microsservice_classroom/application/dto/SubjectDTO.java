@@ -1,7 +1,7 @@
 package com.classroom.microsservice_classroom.application.dto;
 
 import java.time.LocalDateTime;
-
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -18,7 +18,7 @@ public class SubjectDTO {
     private String colorTheme;
     private String subtitle;
     private String imageUrl;
-
+    private List<ActivityDTO> activities;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "America/Sao_Paulo")
     private LocalDateTime createIn;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "America/Sao_Paulo")

@@ -23,6 +23,7 @@ public class ClassroomDocument {
     private String code;
     @Size(max = 8)
     private List<SubjectDocument> subjects;
+    private List<StudentDocument> students;
     @CreatedDate
     private LocalDateTime createIn;
     @LastModifiedDate

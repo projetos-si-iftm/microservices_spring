@@ -54,7 +54,7 @@ public class AccountController {
       public ResponseEntity<Void> validateRequest(@RequestHeader("Authorization") String authHeader) {
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-
+                  log.info("USUARIO NAO AUTORIZADO");
                   return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
             String token = authHeader.substring(7);
@@ -65,7 +65,7 @@ public class AccountController {
 
                   return ResponseEntity.ok().build();
             } else {
-                  log.info("deu erro");
+        
                   return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
       }
